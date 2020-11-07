@@ -24,19 +24,26 @@ namespace czechCovid19APIClient
             }
          }
 
-        private static async Task<Tests> returnTestsData()
-        {     
-            var streamTask = client.GetStreamAsync(Tests.resource);
-            var data = await JsonSerializer.DeserializeAsync<Tests>(await streamTask);
-            return data;
+        private static async Task<dynamic> returnData(string dataToGet)
+        {
+            dynamic streamTask;
+            dynamic data;
 
-        }
-        private static async Task<Infected> returnInfectedData()
-        {     
-            var streamTask = client.GetStreamAsync(Infected.resource);
-            var data = await JsonSerializer.DeserializeAsync<Infected>(await streamTask);
-            return data;
-            
+            switch (dataToGet)
+            {
+                case "tests":
+                    streamTask = client.GetStreamAsync(Tests.resource);
+                    data = await JsonSerializer.DeserializeAsync<Tests>(await streamTask);
+                    return data;
+                case "infected":
+                    streamTask = client.GetStreamAsync(Infected.resource);
+                    data = await JsonSerializer.DeserializeAsync<Infected>(await streamTask);
+                    return data;
+            }
+
+            return new object();
+
+
         }
 
         private static async Task DisplayData(string dataToGet)
@@ -46,11 +53,11 @@ namespace czechCovid19APIClient
             switch (dataToGet)
             {
                 case "tests":
-                    data = await returnTestsData();
+                    data = await returnData("tests");
                     break;
                 
                 case "infected":
-                    data = await returnInfectedData();
+                    data = await returnData("infected");
                     break;
             }
 
