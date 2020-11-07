@@ -42,8 +42,6 @@ namespace czechCovid19APIClient
             }
 
             return new object();
-
-
         }
 
         private static async Task DisplayData(string dataToGet)
@@ -69,7 +67,7 @@ namespace czechCovid19APIClient
 
                 foreach (PropertyInfo prop in props)
                 {
-                    Console.WriteLine(prop.GetValue(item));
+                    Console.WriteLine($"{prop.Name}: {prop.GetValue(item)}");
                 }
                 Console.WriteLine("");
             }
