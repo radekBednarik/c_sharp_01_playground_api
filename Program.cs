@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 using System.Reflection;
+using System.IO;
 
 namespace czechCovid19APIClient
 {
@@ -14,11 +15,11 @@ namespace czechCovid19APIClient
         {
             foreach (var arg in args) {
                 if (arg == "tests") {
-                    await DisplayData("tests");
+                    await DisplayAndSaveData("tests");
                 }
 
                 if (arg == "infected") {
-                    await DisplayData("infected");
+                    await DisplayAndSaveData("infected");
                 }
                 
             }
@@ -44,7 +45,7 @@ namespace czechCovid19APIClient
             return new object();
         }
 
-        private static async Task DisplayData(string dataToGet)
+        private static async Task DisplayAndSaveData(string dataToGet)
         {
             dynamic data = null;
 
@@ -52,10 +53,12 @@ namespace czechCovid19APIClient
             {
                 case "tests":
                     data = await returnData("tests");
+                    saveDataToJson("testsData.json", data);
                     break;
                 
                 case "infected":
                     data = await returnData("infected");
+                    saveDataToJson("infectedData.json", data);
                     break;
             }
 
@@ -70,6 +73,14 @@ namespace czechCovid19APIClient
                     Console.WriteLine($"{prop.Name}: {prop.GetValue(item)}");
                 }
                 Console.WriteLine("");
+            }
+        }
+
+        private static async Task saveDataToJson(string filename, dynamic data)
+        {
+            using (FileStream fs = File.Create(filename))
+            {
+                await JsonSerializer.SerializeAsync(fs, data);
             }
         }
     }
